@@ -34,7 +34,7 @@ def Beale_Madja_1985(xxc, yyc):
     return ic
 
 def compact_vm(xx,yy):
-    """_other_initial conditions_
+    """_Initial conditions describing positions_
 
     Args:
         xx (_type_): _description_
@@ -44,9 +44,9 @@ def compact_vm(xx,yy):
         _type_: _description_
     """
     R = 0.125
-    r1 = ((xx-0.5-0.125)**2+(yy-0.5)**2)**0.5
-    r2 = ((xx-0.5+0.125)**2+(yy-0.5)**2)**0.5
-    _ic = jnp.where(r1<R,jnp.cos(0.5*np.pi*r1/R )**2+0.5,0)+ jnp.where(r2<R,jnp.cos(0.5*np.pi*r2/R)**2+0.5,0)
+    r1 = ((xx-0.5-0.125)**2 + (yy-0.5)**2)**0.5
+    r2 = ((xx-0.5+0.125)**2 + (yy-0.5)**2)**0.5
+    _ic = jnp.where(r1<R,jnp.cos(0.5*np.pi*r1/R )**2+0.5,0) + jnp.where(r2<R,jnp.cos(0.5*np.pi*r2/R)**2+0.5,0)
     return _ic/2
 
 def compact_vm2(xx,yy):
