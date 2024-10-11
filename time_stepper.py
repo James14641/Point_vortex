@@ -45,6 +45,8 @@ def sigma(xyarr, theta):
         Matrix = Matrix.at[:,p].set(uv*theta['sigma'][p]) # \in R^{2d,P}
     return Matrix  
 
+
+
 def V_sigma(xyarr, theta):
     """_Vectorised version of the sigma function_
 
@@ -140,6 +142,11 @@ def euler(xyarr, carr, sigma, dt, dz, theta, delta):
     xyarr = CFE(xyarr, carr, dt ,delta) + sigma(xyarr, theta) @ dz
     return xyarr
 
+def euler_diffusion(xyarr, carr, sigma, dt, dz, dw, theta, delta, visc):
+    "adds nu dW"
+    xyarr = euler(xyarr, carr, sigma, dt, dz, theta, delta) + visc*dw
+    return xyarr
+
 def ssp33(xyarr, carr, sigma, dt, dz, theta, delta):
     """_ssp33 scheme see shu osher 1988, note that in the stochastic setting this is not ssp._
 
@@ -156,6 +163,27 @@ def ssp33(xyarr, carr, sigma, dt, dz, theta, delta):
         _type_: _description_
     """
     f1 = euler(xyarr, carr, sigma, dt, dz, theta, delta)
+    f1 = 3 / 4 * f1 + 1 / 4 * euler(f1, carr, sigma, dt, dz, theta, delta)
+    f1 = 1 / 3 * f1 + 2 / 3 * euler(f1, carr, sigma, dt, dz, theta, delta)
+    return f1
+
+
+def ARK_SSP33_EM(xyarr, carr, sigma, dt, dz, dw, theta, delta, visc):
+    """_additive RK scheme that introduces Ito term representing diffusion._
+
+    Args:
+        xyarr (_type_): _description_
+        carr (_type_): _description_
+        sigma (_type_): _description_
+        dt (_type_): _description_
+        dz (_type_): _description_
+        theta (_type_): _description_
+        delta (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    f1 = euler_diffusion(xyarr, carr, sigma, dt, dz, dw, theta, delta, visc)
     f1 = 3 / 4 * f1 + 1 / 4 * euler(f1, carr, sigma, dt, dz, theta, delta)
     f1 = 1 / 3 * f1 + 2 / 3 * euler(f1, carr, sigma, dt, dz, theta, delta)
     return f1
@@ -178,3 +206,20 @@ def integrate(step, xy0, carr, dts, dzs, theta, delta):
         return xyarr, xyarr
     _, xys = jax.lax.scan(body, xy0, (dts, dzs))
     return jnp.insert(xys, 0, xy0, axis=0)
+
+
+def integrate_new(step, xy0, carr, dts, dzs, dws, theta, delta, visc):
+
+    def body(xyarr, dt_dz_dw):
+        dt, dz, dw = dt_dz_dw
+        xyarr = step(xyarr, carr, sigma ,dt, dz, dw, theta, delta, visc)
+        return xyarr, xyarr
+    
+    _, xys = jax.lax.scan(body, xy0, (dts, dzs, dws))
+    return jnp.insert(xys, 0, xy0, axis=0)
+
+
+
+
+
+
