@@ -13,7 +13,7 @@ $$
 
 # references 
 This code is a usable subset of the code developed for the paper,
-# https://arxiv.org/pdf/2405.00640
+###https://arxiv.org/pdf/2405.00640
 @article{woodfield2024stochastic,
   title={Stochastic fluids with transport noise: Approximating diffusion from data using SVD and ensemble forecast back-propagation},
   author={Woodfield, James},
