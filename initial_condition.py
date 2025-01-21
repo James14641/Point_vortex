@@ -1,7 +1,6 @@
 import sys, os
 import jax.numpy as jnp
 
-
 def w_0(xxc, yyc):
     """_Initial conditions that are specified by Wei_
 

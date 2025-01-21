@@ -8,12 +8,20 @@ import jax.numpy as jnp
 import numpy as np
 import matplotlib.pyplot as plt
 # here you may need to point to your locally installed function.
+cwd = os.getcwd()
+print(cwd)
 sys.path.insert(0,'/Users/jmw/Documents/GitHub/Point_vortex/')
+sys.path.insert(0,cwd)
 from initial_condition import *
 from mesh import *
 from Kernel import *
 from time_stepper import *
 from utility_functions import *
+
+if jax.devices()[0].platform != 'gpu':
+    print("warning: jax not on the gpu. ")
+else:
+    print(f'using device: {jax.devices()[0]}')
 
 def main():
     """
@@ -63,6 +71,7 @@ def main():
         plt.title(f"Vorticity at time {i*dt}")
         plt.draw()
         plt.pause(0.001)
+        plt.savefig(f'cwd:')
     plt.show()
 
 if __name__=="__main__":
