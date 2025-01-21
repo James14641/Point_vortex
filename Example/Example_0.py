@@ -3,7 +3,7 @@ from jax import grad, jit
 from jax import lax
 from jax import random
 import jax
-jax.config.update("jax_enable_x64", True)
+jax.config.update("jax_enable_x64", True)# double precision has historically been more stable.
 import jax.numpy as jnp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,6 +16,7 @@ from mesh import *
 from Kernel import *
 from time_stepper import *
 from utility_functions import *
+import time
 
 if jax.devices()[0].platform != 'gpu':
     print("warning: jax not on the gpu. ")
@@ -50,9 +51,26 @@ def main():
         carr = jnp.delete(carr, index_remove)
     xyarr = x_and_y_to_xy(xarr, yarr)
     xyarr0 = xyarr
+    print(f"Number of points: {xyarr0.shape[0]/2}")
+
+    plt.clf()
+    xarr_det,yarr_det = xy_to_x_and_y(xyarr0)
+    plt.scatter(xarr_det,yarr_det,c=carr/(hdx*hdy),marker='.',s=4,cmap='jet',edgecolors='none')
+    plt.title(f"Vorticity at initial time {0}")
+    plt.draw()
+    plt.pause(0.001)
+    plt.colorbar(label='Vorticity')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.grid(True)
+    plt.savefig(f'{cwd}/Initial_time_vorticity.png', dpi=600, bbox_inches='tight')
+    plt.show()
 
     print("starting temporal integraion")
-    xy_det = integrate_deterministic_no_save(ssp33_deterministic, xyarr0, carr, dts, delta)# determistic by setting dbs*0
+    start_time = time.time()
+    xy_det = integrate_deterministic_no_save(ssp33_deterministic, xyarr0, carr, dts, delta) # deterministic by setting dbs*0
+    end_time = time.time()
+    print(f"Time taken for computation: {end_time - start_time} seconds")
     print("finished temporal integraion")
     fig = plt.figure()
     ax = fig.add_subplot()

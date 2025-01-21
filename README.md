@@ -1,10 +1,26 @@
 
 # Point vortex library
+
 - <strong>Autodifferentiable<strong>
 - <strong>CPU-GPU tested -jax[cpu] - jax[cuda12]<strong>
-- <strong>Works on nvidia cluster and locally on different macs<strong>
+- <strong>Works on nvidia cluster and tested locally on different macOS<strong>
 
 ![image of final solution](Final_time_vorticity.png)
+
+# References 
+
+This code is a usable subset of the code developed for the paper,
+
+###https://arxiv.org/pdf/2405.00640
+
+@article{woodfield2024stochastic,
+  title={Stochastic fluids with transport noise: Approximating diffusion from data using SVD and ensemble forecast back-propagation},
+  author={Woodfield, James},
+  journal={arXiv preprint arXiv:2405.00640},
+  year={2024}
+}
+
+It solves inviscid vortex models, with/without stochastic noise. It is differentiable. Available under a MIT (free to use but dont sue me) Liscence.  
 
 # To run:
 Attain a copy of the code and run it e.g. : 
@@ -15,16 +31,17 @@ Attain a copy of the code and run it e.g. :
 - <strong>-python3 example_2.py<strong>
 noting that the entire solution trajectory is saved to local memory. 
 
-### The below timestepers are differentiable to optimise the final condition.
+### The below timestepers just give final condition.
 - <strong>-python3 example_3.py<strong>
 - <strong>-python3 example_4.py<strong>
 
 ### Dependencies: 
-jax, matplotlib, numpy.
+jax, matplotlib... I use some other librarys also. 
 
 ### Example zero solves
 $$\boldsymbol{x}(\boldsymbol{X}, t)=\boldsymbol{x}(\boldsymbol{X}, 0)+\int_0^t \boldsymbol{u}(\boldsymbol{x}(\boldsymbol{X}, s), s) d s; \quad \boldsymbol{x}(\boldsymbol{X}, 0)=\boldsymbol{X}
 $$
+Where the Kernel is specified by the Euler Kernel. 
 
 ### Example one solves: 
 $$\boldsymbol{x}(\boldsymbol{X}, t)=\boldsymbol{x}(\boldsymbol{X}, 0)+\int_0^t \boldsymbol{u}(\boldsymbol{x}(\boldsymbol{X}, s), s) d s+\sum_{p=1}^P \int_0^t \theta_p \boldsymbol{\xi}_p(\boldsymbol{x}(\boldsymbol{X}, s)) \circ d B^p(s) ; \quad \boldsymbol{x}(\boldsymbol{X}, 0)=\boldsymbol{X}
@@ -42,18 +59,6 @@ $$
 $$\boldsymbol{x}(\boldsymbol{X}, t)=\boldsymbol{x}(\boldsymbol{X}, 0)+\int_0^t \boldsymbol{u}(\boldsymbol{x}(\boldsymbol{X}, s), s) d s+\sum_{p=1}^P \int_0^t \theta_p \boldsymbol{\xi}_p(\boldsymbol{x}(\boldsymbol{X}, s)) \circ d B^p(s) +  \int_0^t \nu d W(s) ; \quad \boldsymbol{x}(\boldsymbol{X}, 0)=\boldsymbol{X}
 $$
 
-
-# References 
-This code is a usable subset of the code developed for the paper,
-
-###https://arxiv.org/pdf/2405.00640
-
-@article{woodfield2024stochastic,
-  title={Stochastic fluids with transport noise: Approximating diffusion from data using SVD and ensemble forecast back-propagation},
-  author={Woodfield, James},
-  journal={arXiv preprint arXiv:2405.00640},
-  year={2024}
-}
 
 ### Numerical Approach:
 Let each point belong in a initial mesh $X_{i}\in \wedge_0$, 
