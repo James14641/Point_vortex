@@ -4,7 +4,7 @@
 - <strong>CPU-GPU tested -jax[cpu] - jax[cuda12]<strong>
 
 # To run:
-Attain a copy of the code: 
+Attain a copy of the code and run it e.g. : 
 - <strong>-python3 example_1.py<strong>
 
 

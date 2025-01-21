@@ -4,7 +4,6 @@ from jax import *
 from Kernel import *
 from utility_functions import *
 
-
 def vector_field_basis(xarr,yarr,n):
     """_stochastic basis of noise function, n is the basis number
         one can change the basis_
