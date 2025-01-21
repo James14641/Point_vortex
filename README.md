@@ -35,9 +35,8 @@ where $L_p$ is the p-th order Laguerre polynomial. This scheme (in the determini
 To deal with the stochastic Stratonovich term, we discretise in time with the stochastic generalisation of the SSP33 scheme of Shu and Osher, where the forward Euler scheme is replaced with Euler Maruyama scheme in the Shu Osher representation. This time-stepping is weak order 1, strong order 0.5, as can be found by Taylor expanding or as a subcase of the work by ruemelin.
 
 
-
 ### requirements
-jax, numpy, matplotlib and the usual suspects.
+jax, numpy, matplotlib ect.
 
 # References 
 This code is a usable subset of the code developed for the paper,
