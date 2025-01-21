@@ -7,7 +7,6 @@ jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
 import numpy as np
 import matplotlib.pyplot as plt
-# here you may need to point to your locally installed function.
 cwd = os.getcwd()
 print(cwd)
 sys.path.insert(0,'/Users/jmw/Documents/GitHub/Point_vortex/')
@@ -18,23 +17,21 @@ from Kernel import *
 from time_stepper import *
 from utility_functions import *
 
-if jax.devices()[0].platform != 'gpu':
-    print("warning: jax not on the gpu. ")
-else:
-    print(f'using device: {jax.devices()[0]}')
-
 def main():
     """
     _
-    Example 1: this constructs a stochastic solution to the point vortex system. 
+    Example 4: this constructs a stochastic solution to the point vortex system, 
+    where one has additional viscosity, this is introduced by a Itô capturing term, 
     _
     """
     T = 32 #2**-4 # affect nt. 
     dt = 2 ** -3 # affect nt. # -4 seems ecessive
+    visc = 0.1# this is viscosity and causes points to drift away from another, see the scale on the x,y axis. 
     nt = int(T/dt)
     print("nt", nt) # 320 time steps 
     key = jax.random.PRNGKey(2)
     P = 1
+    dws = jnp.sqrt(dt) * jax.random.normal(key, shape=(nt,1))
     dbs = jnp.sqrt(dt) * jax.random.normal(key, shape=(nt,P))
     dts = jnp.ones(nt) * dt
     print(f"We use $P = {P}$ basis functions. We use $n_t = {nt}$ timesteps on the interval $t \in [0,{T}]$, with $\Delta t = {dt}$")
@@ -43,8 +40,8 @@ def main():
     string_for_print = theta_true['sigma']
     print(f'we use $\\theta = {string_for_print}$')
 
-    xmin = 0.;xmax = 1.;ymin = 0.;ymax = 1. # same as the meshgrid for weather, but different number of points. 
-    NM = 256#64#128; 
+    xmin = 0.;xmax = 1.;ymin = 0.;ymax = 1.
+    NM = 128#64#128; 
     nx, ny, hdx, hdy, xc, yc, xxc, yyc = mesh_creation(NM,NM,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
     
     delta =  1.5*hdx**0.75 #jnp.sqrt(h)  #delta = 1 / jnp.sqrt(32)  # sqrt h # krasney1986 a . ; something like that
@@ -61,17 +58,16 @@ def main():
     xyarr = x_and_y_to_xy(xarr, yarr)
     xyarr0 = xyarr
     print("starting temporal integraion")
-    xy_det = integrate(ssp33, xyarr0, carr, dts, dbs*1, theta_true, delta)# determistic by setting dbs*0
+    xy_det_final = integrate_new_no_save(ARK_SSP33_EM, xyarr0, carr, dts, dbs*0,dws*1, theta_true, delta, visc)# determistic by setting dbs*0
+    print("finished temporal integraion")
+
     fig = plt.figure()
     ax = fig.add_subplot()
-    for i in range(0,nt+1): # nt+1 initial conditions. 
-        plt.clf()
-        xarr_det,yarr_det = xy_to_x_and_y(xy_det[i])
-        plt.scatter(xarr_det,yarr_det,c=carr/(hdx*hdy),marker='.',s=4,cmap='jet',edgecolors='none')
-        plt.title(f"Vorticity at time {i*dt}")
-        plt.draw()
-        plt.pause(0.001)
-        plt.savefig(f'/Users/jmw/Documents/GitHub/Point_vortex/Data/final_time')
+    plt.clf()
+    xarr_det,yarr_det = xy_to_x_and_y(xy_det_final)
+    plt.scatter(xarr_det,yarr_det,c=carr/(hdx*hdy),marker='.',s=4,cmap='jet',edgecolors='none')
+    plt.title(f"Vorticity at final time $t = {T}$")
+    plt.draw()
     plt.show()
 
 if __name__=="__main__":

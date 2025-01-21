@@ -26,7 +26,7 @@ else:
 def main():
     """
     _
-    Example 1: this constructs a stochastic solution to the point vortex system. 
+    Example 3: this constructs a stochastic solution to the point vortex system. 
     _
     """
     T = 32 #2**-4 # affect nt. 
@@ -44,7 +44,7 @@ def main():
     print(f'we use $\\theta = {string_for_print}$')
 
     xmin = 0.;xmax = 1.;ymin = 0.;ymax = 1. # same as the meshgrid for weather, but different number of points. 
-    NM = 256#64#128; 
+    NM = 256#256#64#128; 
     nx, ny, hdx, hdy, xc, yc, xxc, yyc = mesh_creation(NM,NM,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
     
     delta =  1.5*hdx**0.75 #jnp.sqrt(h)  #delta = 1 / jnp.sqrt(32)  # sqrt h # krasney1986 a . ; something like that
@@ -61,17 +61,17 @@ def main():
     xyarr = x_and_y_to_xy(xarr, yarr)
     xyarr0 = xyarr
     print("starting temporal integraion")
-    xy_det = integrate(ssp33, xyarr0, carr, dts, dbs*1, theta_true, delta)# determistic by setting dbs*0
+    xy_det = integrate_no_save(ssp33, xyarr0, carr, dts, dbs*0, theta_true, delta)# determistic by setting dbs*0
+    print("finished temporal integraion")
     fig = plt.figure()
     ax = fig.add_subplot()
-    for i in range(0,nt+1): # nt+1 initial conditions. 
-        plt.clf()
-        xarr_det,yarr_det = xy_to_x_and_y(xy_det[i])
-        plt.scatter(xarr_det,yarr_det,c=carr/(hdx*hdy),marker='.',s=4,cmap='jet',edgecolors='none')
-        plt.title(f"Vorticity at time {i*dt}")
-        plt.draw()
-        plt.pause(0.001)
-        plt.savefig(f'/Users/jmw/Documents/GitHub/Point_vortex/Data/final_time')
+    xarr_det,yarr_det = xy_to_x_and_y(xy_det)
+    plt.clf()
+    plt.scatter(xarr_det,yarr_det,c=carr/(hdx*hdy),marker='.',s=4,cmap='jet',edgecolors='none')
+    plt.title(f"Vorticity at final time {T}")
+    plt.draw()
+    plt.pause(0.001)
+    plt.savefig(f'{cwd}:Final_time_vorticity.png')
     plt.show()
 
 if __name__=="__main__":

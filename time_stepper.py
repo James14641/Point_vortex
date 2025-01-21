@@ -31,7 +31,7 @@ def sigma(xyarr, theta):
     ___
     Args:
         xyarr (_type_): _description_
-        theta (_type_): _description_
+        theta (_jnp.array_): _vector of coefficients infront of noise_
     Returns:
         _type_: _description_
     """
@@ -69,6 +69,18 @@ def V_sigma(xyarr, theta):
     return updated_matrix
 
 def VelocityUV(xarr, yarr, carr, delta):
+    """_This evaluates Velocity_at_Field, 
+    at the points required of an inviscid vortex method._
+
+    Args:
+        xarr (_type_): _description_
+        yarr (_type_): _description_
+        carr (_type_): _description_
+        delta (_float_): _regularisation parameter_
+
+    Returns:
+        _type_: _description_
+    """
     u_vel, v_vel = Velocity_at_Field(xarr, yarr, xarr, yarr, carr, delta)
     return u_vel, v_vel
 
@@ -93,7 +105,7 @@ def det_vel(xarrd, yarrd, xarr, yarr, carr, delta):
         xarr (_type_): _description_
         yarr (_type_): _description_
         carr (_type_): _description_
-        delta (_type_): _description_
+        delta (_float_): _regularisation parameter_
 
     Returns:
         _type_: _description_
@@ -111,7 +123,7 @@ def CFE(xyarr, carr, dt, delta ):
         xyarr (_type_): _description_
         carr (_type_): _description_
         dt (_type_): _description_
-        delta (_type_): _description_
+        delta (_float_): _regularisation parameter_
 
     Returns:
         _type_: _description_
@@ -132,8 +144,8 @@ def euler(xyarr, carr, sigma, dt, dz, theta, delta):
         sigma (_type_): _description_
         dt (_type_): _description_
         dz (_type_): _description_
-        theta (_type_): _description_
-        delta (_type_): _description_
+        theta (_jnp.array_): _vector of coefficients infront of noise_
+        delta (_float_): _regularisation parameter_
 
     Returns:
         _type_: _description_
@@ -146,6 +158,13 @@ def euler_diffusion(xyarr, carr, sigma, dt, dz, dw, theta, delta, visc):
     xyarr = euler(xyarr, carr, sigma, dt, dz, theta, delta) + visc*dw
     return xyarr
 
+
+def ssp33_deterministic(xyarr, carr, dt, delta):
+    f1 = CFE(xyarr, carr, dt, delta)
+    f1 = 3 / 4 * f1 + 1 / 4 * CFE(f1, carr, dt, delta)
+    f1 = 1 / 3 * f1 + 2 / 3 * CFE(f1, carr, dt, delta)
+    return f1
+
 def ssp33(xyarr, carr, sigma, dt, dz, theta, delta):
     """_ssp33 scheme see shu osher 1988, note that in the stochastic setting this is not ssp._
 
@@ -155,8 +174,8 @@ def ssp33(xyarr, carr, sigma, dt, dz, theta, delta):
         sigma (_type_): _description_
         dt (_type_): _description_
         dz (_type_): _description_
-        theta (_type_): _description_
-        delta (_type_): _description_
+        theta (_jnp.array_): _vector of coefficients infront of noise_
+        delta (_float_): _regularisation parameter_
 
     Returns:
         _type_: _description_
@@ -176,8 +195,8 @@ def ARK_SSP33_EM(xyarr, carr, sigma, dt, dz, dw, theta, delta, visc):
         sigma (_type_): _description_
         dt (_type_): _description_
         dz (_type_): _description_
-        theta (_type_): _description_
-        delta (_type_): _description_
+        theta (_jnp.array_): _vector of coefficients infront of noise_
+        delta (_float_): _regularisation parameter_
 
     Returns:
         _type_: _description_
@@ -196,8 +215,8 @@ def integrate(step, xy0, carr, dts, dzs, theta, delta):
         carr (_type_): _description_
         dts (_type_): _description_
         dzs (_type_): _description_
-        theta (_type_): _description_
-        delta (_type_): _description_
+        theta (_jnp.array_): _vector of coefficients infront of noise_
+        delta (_float_): _regularisation parameter_
     """
     def body(xyarr, dt_dz):
         dt, dz = dt_dz
@@ -208,7 +227,23 @@ def integrate(step, xy0, carr, dts, dzs, theta, delta):
 
 
 def integrate_new(step, xy0, carr, dts, dzs, dws, theta, delta, visc):
+    """
+    Integrates a system over time using a custom step function.
 
+    Args:
+        step (_function_): Function that computes a single integration step.
+        xy0 (_array_): Initial state of the system (e.g., 1D or 2D array).
+        carr (_array_): Parameter array passed to the step function.
+        dts (_array_): Array of time steps.
+        dzs (_array_): Array of spatial steps.
+        dws (array): Array of weights or additional parameters.
+        theta (float): Parameter for the step function.
+        delta (float): Parameter for the step function.
+        visc (float): Viscosity parameter.
+
+    Returns:
+        array: Array of system states, including the initial state and all intermediate states.
+    """
     def body(xyarr, dt_dz_dw):
         dt, dz, dw = dt_dz_dw
         xyarr = step(xyarr, carr, sigma ,dt, dz, dw, theta, delta, visc)
@@ -217,8 +252,29 @@ def integrate_new(step, xy0, carr, dts, dzs, dws, theta, delta, visc):
     _, xys = jax.lax.scan(body, xy0, (dts, dzs, dws))
     return jnp.insert(xys, 0, xy0, axis=0)
 
+def integrate_deterministic_no_save(step, xy0, carr, dts, delta):
+    "Example 1 without saving the intermediate states in local memory"
+    def body(xyarr, dt_dz):
+        dt = dt_dz
+        xyarr = step(xyarr, carr ,dt, delta)
+        return xyarr, None  # Only the state is returned; no need to save outputs
+    xys_final, _ = jax.lax.scan(body, xy0, (dts))
+    return xys_final  # Return only the final state
 
+def integrate_no_save(step, xy0, carr, dts, dzs, theta, delta):
+    "Example 1 without saving the intermediate states in local memory"
+    def body(xyarr, dt_dz):
+        dt, dz = dt_dz
+        xyarr = step(xyarr, carr, sigma ,dt, dz, theta, delta)
+        return xyarr, None  # Only the state is returned; no need to save outputs
+    xys_final, _ = jax.lax.scan(body, xy0, (dts, dzs))
+    return xys_final  # Return only the final state
 
-
-
-
+def integrate_new_no_save(step, xy0, carr, dts, dzs, dws, theta, delta, visc):
+    "Example 2 without saving the intermediate states in local memory"
+    def body(xyarr, dt_dz_dw):
+        dt, dz, dw = dt_dz_dw
+        xyarr = step(xyarr, carr, sigma ,dt, dz, dw, theta, delta, visc)
+        return xyarr, None  # Only the state is returned; no need to save outputs
+    xys_final, _ = jax.lax.scan(body, xy0, (dts, dzs, dws))
+    return xys_final
