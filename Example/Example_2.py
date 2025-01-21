@@ -7,8 +7,10 @@ jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
 import numpy as np
 import matplotlib.pyplot as plt
-
+cwd = os.getcwd()
+print(cwd)
 sys.path.insert(0,'/Users/jmw/Documents/GitHub/Point_vortex/')
+sys.path.insert(0,cwd)
 from initial_condition import *
 from mesh import *
 from Kernel import *
