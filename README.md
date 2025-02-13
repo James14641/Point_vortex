@@ -9,18 +9,19 @@
 
 # References 
 
-This code is a usable subset of the code developed for the paper,
+This code is a usable subset of the code developed for the paper:
 
+Stochastic fluids with transport noise: Approximating diffusion from data using SVD and ensemble forecast back-propagation
 ###https://arxiv.org/pdf/2405.00640
-
 @article{woodfield2024stochastic,
   title={Stochastic fluids with transport noise: Approximating diffusion from data using SVD and ensemble forecast back-propagation},
   author={Woodfield, James},
   journal={arXiv preprint arXiv:2405.00640},
   year={2024}
 }
+If you use this code or find it helpful please cite the above paper, and at least the additional references (Chorin, Madja + Bertozzi, Rüemelin).
 
-It solves inviscid vortex models, with/without stochastic noise. It is differentiable. Available under a MIT (free to use but dont sue me) Liscence.  
+It solves inviscid vortex models, with/without stochastic noise. It is differentiable. Available under a MIT Liscence.  
 
 # To run:
 Attain a copy of the code and run it e.g. : 
@@ -59,28 +60,10 @@ $$
 $$\boldsymbol{x}(\boldsymbol{X}, t)=\boldsymbol{x}(\boldsymbol{X}, 0)+\int_0^t \boldsymbol{u}(\boldsymbol{x}(\boldsymbol{X}, s), s) d s+\sum_{p=1}^P \int_0^t \theta_p \boldsymbol{\xi}_p(\boldsymbol{x}(\boldsymbol{X}, s)) \circ d B^p(s) +  \int_0^t \nu d W(s) ; \quad \boldsymbol{x}(\boldsymbol{X}, 0)=\boldsymbol{X}
 $$
 
-
 ### Numerical Approach:
-Let each point belong in a initial mesh $X_{i}\in \wedge_0$, 
 
-Each "point" vortex has strength $\Gamma_i$, denoted in this code by the i-th position of the vector carr.
-
-The point vortex anzats 
-$$
-\omega(x)=\sum_i \Gamma_i \delta (x-x_i),
-$$
-and the regularised Biot-Savart kernel of [7]
-$$
-\left(u^\delta(x, y), v^\delta(x, y)\right)^T=\sum_{i \in \wedge_0} \frac{\Gamma_i\left(-\left(y-y_i\right),\left(x-x_i\right)\right)^T}{2 \pi\left\|\boldsymbol{x}-\boldsymbol{x}_i\right\|_2^2}\left(1-L_p\left(\left\|\boldsymbol{x}-\boldsymbol{x}_i\right\|_2^2 / \delta^2\right) \exp \left(-\left\|\boldsymbol{x}-\boldsymbol{x}_i\right\|_2^2 / \delta^2\right)\right)
-$$
-closes the system as a finite-dimensional system,
-$$
- \boldsymbol{x}_{\boldsymbol{i}}(t)=\boldsymbol{x}_{\boldsymbol{i}}(0)+\int_0^t \boldsymbol{u}^\delta\left(\boldsymbol{x}_{\boldsymbol{i}}(s), s\right) d s+\sum_{p=1}^P \int_0^t \theta_p \boldsymbol{\xi}_p\left(\boldsymbol{x}_{\boldsymbol{i}}(s)\right) \circ d W_s^p, \quad \forall i \in \wedge_0 
-$$
-where $L_p$ is the p-th order Laguerre polynomial 
-
-
-This code is based upon: lecture notes provided by JOHN METHVEN in a summer school, and 
+### Code History: 
+This code is based upon: lecture notes and example code provided by JOHN METHVEN in a summer school. Then extended for different notions of integration for the paper: Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics. Then extended into jax, for more points using a different temporal integrator. 
 
 
 # Kernel convergence in the deterministic setting,
@@ -98,9 +81,3 @@ To deal with the stochastic Stratonovich term, we discretise in time with the st
 [40] = W Rüemelin. Numerical treatment of stochastic differential equations. SIAM Journal on Numerical Analysis,
 19(3):604–613, 1982.
 
-
-
-The paper: 
-Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics. 
-
-Studies some of the effects of higher order stochastic integration for point vortex systems. 
