@@ -36,7 +36,7 @@ def main():
     dts = jnp.ones(nt) * dt
     print(f"We use $n_t = {nt}$ timesteps on the interval $t \in [0,{T}]$, with $\Delta t = {dt}$")
     xmin = 0.;xmax = 1.;ymin = 0.;ymax = 1. # same as the meshgrid for weather, but different number of points. 
-    NM = 128#512#256#64#128; 
+    NM = 512#512#256#64#128; 
     nx, ny, hdx, hdy, xc, yc, xxc, yyc = mesh_creation(NM,NM,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
     delta =  1.5*hdx**0.75 #jnp.sqrt(h)  #delta = 1 / jnp.sqrt(32)  # sqrt h # krasney1986 a . ; something like that
     initial_vorticity = compact_vm2(xxc,yyc)#w_0(xxc,yyc)#w_0(xxc, yyc)# Beale_Madja_1985(xxc, yyc)#c_tpm(xxc,yyc)

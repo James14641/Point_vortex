@@ -63,7 +63,8 @@ $$
 ### Numerical Approach:
 
 ### Code History: 
-This code is based upon: lecture notes and example code provided by JOHN METHVEN in a summer school. Then extended for different notions of integration for the paper: Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics. Then extended into jax, for more points using a different temporal integrator. 
+This code is based upon: lecture notes and example code provided by JOHN METHVEN in a summer school. Then extended for different notions of integration for the paper: Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics. Then extended into jax, for more points using a different temporal integrator. Approximating diffusion from data using SVD and ensemble forecast back-propagation
+###https://arxiv.org/pdf/2405.00640
 
 
 # Kernel convergence in the deterministic setting,
