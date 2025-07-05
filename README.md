@@ -1,4 +1,7 @@
 
+-- potentially add to the autodifferentiable particle filter library? 
+
+
 # Point vortex library
 
 - <strong>Autodifferentiable<strong>
@@ -30,7 +33,7 @@ Attain a copy of the code and run it e.g. :
 ### The below timesteppers are differentiable to optimise solution trajectories. (Ensemble 4Dvar)
 - <strong>-python3 example_1.py<strong>
 - <strong>-python3 example_2.py<strong>
-noting that the entire solution trajectory is saved to local memory. 
+noting that the entire solution trajectory is saved to local memory.
 
 ### The below timestepers just give final condition.
 - <strong>-python3 example_3.py<strong>
