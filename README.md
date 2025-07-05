@@ -63,9 +63,6 @@ $$
 
 ### Numerical Approach:
 
-### Code History: 
-This code is based upon: lecture notes and example code provided by John Methven for the NCAR summer school in Cambridge. Then subsequently extended to different notions of stochastic integration for the paper: Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics (in pytorch). Then later extended into JAX, with several different performance improvements using a different temporal integrator for the paper: Approximating diffusion from data using SVD and ensemble forecast back-propagation
-### https://arxiv.org/pdf/2405.00640 
 
 # Kernel convergence in the deterministic setting,
 [7] = J Thomas Beale and Andrew Majda. High order accurate vortex methods with explicit velocity kernels. Journal of Computational Physics, 58(2):188–208, 1985
@@ -79,4 +76,13 @@ To deal with the stochastic Stratonovich term, we discretise in time with the st
 
 [40] = W Rüemelin. Numerical treatment of stochastic differential equations. SIAM Journal on Numerical Analysis,
 19(3):604–613, 1982.
+
+
+
+
+
+
+### Code History: 
+This code is based upon: lecture notes and example code provided by John Methven for the NCAR summer school in Cambridge. Then subsequently extended to different notions of stochastic integration for the paper: Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics (in pytorch). Then later extended into JAX, with several different performance improvements using a different temporal integrator for the paper: Approximating diffusion from data using SVD and ensemble forecast back-propagation
+### https://arxiv.org/pdf/2405.00640 
 
