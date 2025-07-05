@@ -1,7 +1,3 @@
-
--- potentially add to the autodifferentiable particle filter library? 
-
-
 # Point vortex library
 
 - <strong>Autodifferentiable<strong>
@@ -15,14 +11,16 @@
 This code is a usable subset of the code developed for the paper:
 
 Stochastic fluids with transport noise: Approximating diffusion from data using SVD and ensemble forecast back-propagation
-###https://arxiv.org/pdf/2405.00640
+### https://arxiv.org/pdf/2405.00640
+
 @article{woodfield2024stochastic,
   title={Stochastic fluids with transport noise: Approximating diffusion from data using SVD and ensemble forecast back-propagation},
   author={Woodfield, James},
   journal={arXiv preprint arXiv:2405.00640},
   year={2024}
 }
-If you use this code or find it helpful please cite the above paper, and at least the additional references (Chorin, Madja + Bertozzi, Rüemelin).
+
+If you use this code or find it helpful please cite the above paper, and the additional references (Chorin, Madja + Bertozzi, Rüemelin).
 
 It solves inviscid vortex models, with/without stochastic noise. It is differentiable. Available under a MIT Liscence.  
 
@@ -66,13 +64,11 @@ $$
 ### Numerical Approach:
 
 ### Code History: 
-This code is based upon: lecture notes and example code provided by JOHN METHVEN in a summer school. Then extended for different notions of integration for the paper: Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics. Then extended into jax, for more points using a different temporal integrator. Approximating diffusion from data using SVD and ensemble forecast back-propagation
-###https://arxiv.org/pdf/2405.00640
-
+This code is based upon: lecture notes and example code provided by John Methven for the NCAR summer school in Cambridge. Then subsequently extended to different notions of stochastic integration for the paper: Lévy areas, Wong Zakai anomalies in diffusive limits of Deterministic Lagrangian Multi-Time Dynamics (in pytorch). Then later extended into JAX, with several different performance improvements using a different temporal integrator for the paper: Approximating diffusion from data using SVD and ensemble forecast back-propagation
+### https://arxiv.org/pdf/2405.00640 
 
 # Kernel convergence in the deterministic setting,
 [7] = J Thomas Beale and Andrew Majda. High order accurate vortex methods with explicit velocity kernels. Journal of Computational Physics, 58(2):188–208, 1985
-
 
 This scheme (in the deterministic setting) has been shown to have the property that if $\delta=h^q$ for $q \in(0,1)$, the order of convergence to the solution of the Euler Equation is given by $O\left(h^{(2 p+2) q}\right)$ see [7].
 
@@ -80,7 +76,6 @@ This scheme (in the deterministic setting) has been shown to have the property t
 # Stochastic scheme temporal consistency,
 
 To deal with the stochastic Stratonovich term, we discretise in time with the stochastic generalisation of the SSP33 scheme of Shu and Osher, where the forward Euler scheme is replaced with Euler Maruyama scheme in the Shu Osher representation. This time-stepping is weak order 1, strong order 0.5, as can be found by Taylor expanding or as a subcase of the work by Ruemelin[40].
-
 
 [40] = W Rüemelin. Numerical treatment of stochastic differential equations. SIAM Journal on Numerical Analysis,
 19(3):604–613, 1982.
